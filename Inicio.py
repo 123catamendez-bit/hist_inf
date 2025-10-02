@@ -37,6 +37,19 @@ stroke_width = st.sidebar.slider('✏️ Grosor del lápiz', 1, 30, 5)
 stroke_color = st.sidebar.color_picker("🎨 Color del lápiz", "#000000")
 bg_color = st.sidebar.color_picker("🌈 Fondo del lienzo", "#FFFFFF")
 
+# Nuevo: selector de tamaño de imagen mejorada
+size_option = st.sidebar.selectbox(
+    "📐 Tamaño de la versión mejorada",
+    options=["1024x1024 (cuadrado)", "1024x1536 (vertical)", "1536x1024 (horizontal)"],
+    index=0
+)
+size_map = {
+    "1024x1024 (cuadrado)": "1024x1024",
+    "1024x1536 (vertical)": "1024x1536",
+    "1536x1024 (horizontal)": "1536x1024"
+}
+selected_size = size_map[size_option]
+
 canvas_result = st_canvas(
     fill_color="rgba(255, 165, 0, 0.3)",
     stroke_width=stroke_width,
@@ -103,7 +116,7 @@ if canvas_result.image_data is not None and api_key and st.button("🔮 Analiza 
                 enhanced = client.images.generate(
                     model="gpt-image-1",
                     prompt=f"Mejora este boceto: {st.session_state.full_response}. Hazlo colorido, con estilo infantil, simple y alegre.",
-                    size="512x512"
+                    size=selected_size
                 )
                 enhanced_url = enhanced.data[0].url
                 st.session_state.enhanced_image = enhanced_url
